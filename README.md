@@ -22,7 +22,7 @@ Antarmuka web sederhana dan modern untuk mengelola layanan Mihomo (Clash Mihomo)
 ## Cara Install & Setup Otomatis
 1. **Clone repository ini:**
    ```bash
-   git clone https://github.com/username/mihomo-webui.git
+   git clone https://github.com/latifangren/mihomo-webui.git
    cd mihomo-webui
    ```
 2. **Jalankan script setup otomatis:**
