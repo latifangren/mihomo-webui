@@ -20,11 +20,18 @@ Antarmuka web sederhana dan modern untuk mengelola layanan Mihomo (Clash Mihomo)
 - User punya akses sudo (untuk kontrol service & log)
 
 ## Cara Install & Setup Otomatis
-1. **Clone repository ini:**
+1. **Clone repository ini dengan script helper:**
    ```bash
-   git clone https://github.com/latifangren/mihomo-webui.git
+   curl -O https://raw.githubusercontent.com/latifangren/mihomo-webui/main/install.sh
+   chmod +x install.sh
+   ./install.sh
    cd mihomo-webui
    ```
+   > Script `install.sh` akan otomatis:
+   > - Mengecek apakah folder sudah ada
+   > - Menawarkan opsi hapus, rename, atau batal jika folder sudah ada
+   > - Clone repo jika folder belum ada
+
 2. **Jalankan script setup otomatis:**
    ```bash
    chmod +x setup_webui.sh
