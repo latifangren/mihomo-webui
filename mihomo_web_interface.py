@@ -20,199 +20,149 @@ def index():
     <html>
     <head>
         <title>Mihomo Web Interface</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
         <style>
+            :root {
+                --primary-yellow: #FECA0A;
+                --primary-yellow2: #FFD600;
+                --bg-main: #000;
+                --bg-card: #1a1a1a;
+                --bg-log: #111;
+                --text-main: #F1F1F1;
+                --text-secondary: #aaaaaa;
+                --border: #333;
+                --shadow: rgba(0,0,0,0.18);
+                --success: #27ae60;
+                --danger: #F44336;
+                --info: #2196F3;
+                --white: #fff;
+            }
             body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background: #f4f6fb;
+                font-family: 'Inter', Arial, sans-serif;
+                background: var(--bg-main);
                 margin: 0;
                 padding: 0;
-                transition: background 0.3s, color 0.3s;
+                color: var(--text-main);
             }
-            .dark-mode body {
-                background: #181c23;
-                color: #e0e0e0;
+            .header {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                background: var(--bg-card);
+                color: var(--primary-yellow);
+                padding: 28px 0 18px 0;
+                box-shadow: 0 4px 16px var(--shadow);
+                margin-bottom: 18px;
+                border-bottom: 2px solid var(--primary-yellow);
+            }
+            .header h1 {
+                font-size: 2em;
+                font-weight: 700;
+                margin: 0 0 6px 0;
+                letter-spacing: 1px;
+                color: var(--primary-yellow);
+                text-shadow: 0 2px 8px #0008;
+            }
+            .header .subtitle {
+                font-size: 1em;
+                font-weight: 400;
+                opacity: 0.85;
+                color: var(--text-secondary);
             }
             .container {
-                max-width: 400px;
-                margin: 60px auto 20px auto;
-                background: #fff;
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 0 10px;
+            }
+            .card {
+                background: var(--bg-card);
                 border-radius: 12px;
-                box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-                padding: 32px 24px 24px 24px;
-                text-align: center;
-                transition: background 0.3s, color 0.3s;
+                box-shadow: 0 2px 10px var(--shadow);
+                margin-bottom: 18px;
+                padding: 22px 16px 16px 16px;
+                border: 1px solid var(--border);
             }
-            .dark-mode .container {
-                background: #23272f;
-                color: #e0e0e0;
+            .card:last-child { margin-bottom: 0; }
+            .status-row {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 10px;
+                margin-bottom: 14px;
             }
-            h1 {
-                color: #2d3a4b;
-                margin-bottom: 16px;
-            }
-            .dark-mode h1 {
-                color: #e0e0e0;
-            }
-            p {
-                font-size: 1.1em;
-                margin-bottom: 24px;
-                color: #444;
-            }
-            .dark-mode p {
-                color: #e0e0e0;
+            .status-label {
+                font-size: 1.08em;
+                font-weight: 600;
+                color: var(--primary-yellow);
             }
             .status-running {
-                color: #27ae60;
+                color: var(--success);
                 font-weight: bold;
             }
             .status-stopped {
-                color: #e74c3c;
+                color: var(--danger);
                 font-weight: bold;
             }
             .button-group {
-                margin-bottom: 18px;
+                margin-bottom: 10px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
             }
-            button, .config-btn {
-                background: #2d3a4b;
-                color: #fff;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 22px;
-                font-size: 1em;
+            button, .config-btn, .autostart-btn, .external-ui-btn {
+                background: var(--bg-main);
+                color: var(--primary-yellow);
+                border: 2px solid var(--primary-yellow);
+                border-radius: 22px;
+                padding: 12px 28px;
+                font-size: 1.08em;
+                font-weight: 600;
                 cursor: pointer;
-                transition: background 0.2s;
-                margin: 0 8px 12px 8px;
+                transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+                box-shadow: 0 2px 8px var(--shadow);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                outline: none;
             }
-            button:hover, .config-btn:hover {
-                background: #1a222c;
+            .btn-start { color: var(--white); background: var(--success); border-color: var(--success); }
+            .btn-start:hover { background: var(--white); color: var(--success); }
+            .btn-stop { color: var(--white); background: var(--danger); border-color: var(--danger); }
+            .btn-stop:hover { background: var(--white); color: var(--danger); }
+            .btn-restart { color: var(--white); background: var(--info); border-color: var(--info); }
+            .btn-restart:hover { background: var(--white); color: var(--info); }
+            .btn-clear { color: var(--bg-main); background: var(--primary-yellow2); border-color: var(--primary-yellow2); }
+            .btn-clear:hover { background: var(--white); color: var(--primary-yellow2); }
+            .external-ui-info {
+                margin: 0 auto 12px auto;
+                max-width: 800px;
+                text-align: center;
+                font-size: 1.08em;
             }
-            .dark-mode button, .dark-mode .config-btn {
-                background: #444b5a;
-                color: #fff;
-            }
-            .notif {
-                margin: 0 auto 16px auto;
-                padding: 10px 18px;
-                border-radius: 6px;
+            .external-ui-btn {
+                margin-left: 10px;
                 font-size: 1em;
-                display: none;
-                max-width: 350px;
+                padding: 10px 22px;
             }
-            .notif-success {
-                background: #eafaf1;
-                color: #27ae60;
-                border: 1px solid #b7e4c7;
+            .autostart-section, .stats-section, .log-container, .config-section {
+                margin-bottom: 16px;
             }
-            .notif-error {
-                background: #fff0f0;
-                color: #e74c3c;
-                border: 1px solid #f5b7b1;
-            }
-            .dark-mode .notif-success {
-                background: #1e2d24;
-                color: #27ae60;
-                border: 1px solid #27ae60;
-            }
-            .dark-mode .notif-error {
-                background: #2d1e1e;
-                color: #e74c3c;
-                border: 1px solid #e74c3c;
-            }
-            .log-container {
-                max-width: 800px;
-                margin: 0 auto 40px auto;
-                background: #222;
-                color: #e0e0e0;
-                border-radius: 8px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.10);
-                padding: 18px 16px;
-                font-family: 'Fira Mono', 'Consolas', monospace;
-                font-size: 0.98em;
-                height: 320px;
-                overflow-y: auto;
-                white-space: pre-wrap;
-                text-align: left;
-                transition: background 0.3s, color 0.3s;
-            }
-            .dark-mode .log-container {
-                background: #181c23;
-                color: #e0e0e0;
-            }
-            .log-title {
-                color: #2d3a4b;
-                margin: 0 0 8px 0;
-                font-size: 1.1em;
-                font-weight: bold;
-            }
-            .dark-mode .log-title {
-                color: #e0e0e0;
-            }
-            .config-section {
-                max-width: 800px;
-                margin: 32px auto 0 auto;
-                background: #fff;
+            .autostart-section, .stats-section {
+                background: var(--bg-card);
                 border-radius: 10px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-                padding: 24px 20px 20px 20px;
-                transition: background 0.3s, color 0.3s;
-            }
-            .dark-mode .config-section {
-                background: #23272f;
-                color: #e0e0e0;
-            }
-            .config-title {
-                color: #2d3a4b;
-                font-size: 1.1em;
-                font-weight: bold;
-                margin-bottom: 10px;
-            }
-            .dark-mode .config-title {
-                color: #e0e0e0;
-            }
-            .config-upload {
-                margin-bottom: 18px;
-            }
-            .config-editor {
-                width: 100%;
-                min-height: 220px;
-                font-family: 'Fira Mono', 'Consolas', monospace;
-                font-size: 1em;
-                border-radius: 6px;
-                border: 1px solid #bbb;
-                padding: 10px;
-                margin-bottom: 10px;
-                background: #f8f9fa;
-                color: #222;
-                resize: vertical;
-                transition: background 0.3s, color 0.3s;
-            }
-            .dark-mode .config-editor {
-                background: #23272f;
-                color: #e0e0e0;
-                border: 1px solid #444b5a;
-            }
-            .stats-section {
-                max-width: 800px;
-                margin: 24px auto 0 auto;
-                background: #fff;
-                border-radius: 10px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-                padding: 18px 20px 14px 20px;
-                color: #222;
-                font-size: 1.04em;
-            }
-            .dark-mode .stats-section {
-                background: #23272f;
-                color: #e0e0e0;
+                padding: 14px 14px 8px 14px;
+                color: var(--primary-yellow2);
+                font-size: 1.01em;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                box-shadow: 0 1px 4px var(--shadow);
+                border: 1px solid var(--primary-yellow2);
             }
             .stats-title {
-                color: #2d3a4b;
-                font-size: 1.08em;
+                color: var(--primary-yellow2);
+                font-size: 1.05em;
                 font-weight: bold;
                 margin-bottom: 8px;
-            }
-            .dark-mode .stats-title {
-                color: #e0e0e0;
             }
             .stats-list {
                 margin: 0;
@@ -222,83 +172,87 @@ def index():
             .stats-list li {
                 margin-bottom: 4px;
             }
-            .autostart-section {
-                max-width: 800px;
-                margin: 18px auto 0 auto;
-                background: #fff;
+            .log-container {
+                background: var(--bg-log);
+                color: var(--white);
                 border-radius: 10px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-                padding: 14px 20px 10px 20px;
-                color: #222;
-                font-size: 1.04em;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
+                box-shadow: 0 2px 8px var(--shadow);
+                padding: 12px 10px;
+                font-family: 'Fira Mono', 'Consolas', monospace;
+                font-size: 0.98em;
+                height: 220px;
+                overflow-y: auto;
+                white-space: pre-wrap;
+                text-align: left;
+                border: 1px solid var(--primary-yellow2);
             }
-            .dark-mode .autostart-section {
-                background: #23272f;
-                color: #e0e0e0;
-            }
-            .autostart-status {
+            .log-title {
+                color: var(--primary-yellow2);
+                margin: 0 0 8px 0;
+                font-size: 1.05em;
                 font-weight: bold;
-                margin-right: 16px;
             }
-            .autostart-btn {
-                background: #2d3a4b;
-                color: #fff;
-                border: none;
-                border-radius: 6px;
-                padding: 7px 18px;
+            .config-section {
+                background: var(--bg-card);
+                border-radius: 10px;
+                box-shadow: 0 2px 8px var(--shadow);
+                padding: 18px 14px 14px 14px;
+                border: 1px solid var(--primary-yellow2);
+            }
+            .config-title {
+                color: var(--primary-yellow2);
+                font-size: 1.05em;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+            .config-upload {
+                margin-bottom: 12px;
+            }
+            .config-editor {
+                width: 100%;
+                min-height: 160px;
+                font-family: 'Fira Mono', 'Consolas', monospace;
                 font-size: 1em;
-                cursor: pointer;
-                margin-left: 8px;
+                border-radius: 8px;
+                border: 1.5px solid var(--primary-yellow2);
+                padding: 8px;
+                margin-bottom: 10px;
+                background: var(--bg-log);
+                color: var(--white);
+                resize: vertical;
+                transition: background 0.3s, color 0.3s;
             }
-            .autostart-btn:hover {
-                background: #1a222c;
-            }
-            .external-ui-info {
-                margin: 18px auto 0 auto;
-                max-width: 800px;
-                text-align: center;
+            .notif {
+                position: fixed;
+                top: 24px;
+                right: 24px;
+                z-index: 9999;
+                min-width: 220px;
+                max-width: 350px;
+                padding: 14px 22px;
+                border-radius: 8px;
                 font-size: 1.08em;
+                font-weight: 600;
+                display: none;
+                box-shadow: 0 4px 16px var(--primary-yellow2);
             }
-            .external-ui-btn {
-                display: inline-block;
-                margin-left: 10px;
-                background: #2d3a4b;
-                color: #fff;
-                border-radius: 6px;
-                padding: 8px 20px;
-                text-decoration: none;
-                font-weight: bold;
-                transition: background 0.2s;
+            .notif-success {
+                background: var(--bg-card);
+                color: var(--success);
+                border: 1.5px solid var(--success);
             }
-            .external-ui-btn:hover {
-                background: #1a222c;
+            .notif-error {
+                background: #2d1e1e;
+                color: var(--danger);
+                border: 1.5px solid var(--danger);
             }
-            .external-ui-form {
-                margin-top: 8px;
-                display: inline-block;
-            }
-            .external-ui-input {
-                padding: 7px 12px;
-                border-radius: 5px;
-                border: 1px solid #bbb;
-                font-size: 1em;
-                width: 320px;
-                margin-right: 6px;
-            }
-            .external-ui-save {
-                background: #27ae60;
-                color: #fff;
-                border: none;
-                border-radius: 5px;
-                padding: 7px 16px;
-                font-size: 1em;
-                cursor: pointer;
-            }
-            .external-ui-save:hover {
-                background: #219150;
+            @media (max-width: 700px) {
+                .container, .header, .card, .autostart-section, .stats-section, .log-container, .config-section {
+                    padding-left: 4px !important;
+                    padding-right: 4px !important;
+                }
+                .header h1 { font-size: 1.1em; }
+                .button-group { flex-direction: column; gap: 8px; }
             }
         </style>
         <script>
@@ -510,53 +464,56 @@ def index():
         </script>
     </head>
     <body>
+        <div class="header">
+            <h1>🚀 Mihomo Web Interface</h1>
+            <div class="subtitle">Kelola layanan Clash Meta Mihomo dengan mudah & modern</div>
+        </div>
         <div class="container">
-            <h1>Mihomo Web Interface</h1>
-            <div style="text-align:right; margin-bottom:10px;">
-                <label style="font-size:0.98em; cursor:pointer;">
-                    <input type="checkbox" id="darkmode-toggle" onclick="toggleDarkMode()" style="vertical-align:middle; margin-right:6px;"> Dark Mode
-                </label>
+            <div class="card">
+                <div class="status-row">
+                    <span class="status-label">Status Mihomo:</span>
+                    <span id="status-span" class="{{ 'status-running' if status == 'Mihomo is running' else 'status-stopped' }}">{{ status }}</span>
+                </div>
+                <div class="button-group">
+                    <button onclick="startMihomo()" class="btn-start">▶️ Start</button>
+                    <button onclick="stopMihomo()" class="btn-stop">⏹️ Stop</button>
+                    <button onclick="restartMihomo()" class="btn-restart">🔄 Restart</button>
+                    <button onclick="clearLog()" class="btn-clear">🧹 Clear Log</button>
+                </div>
             </div>
-            <div id="notif" class="notif"></div>
-            <p>Status: <span id="status-span" class="{{ 'status-running' if status == 'Mihomo is running' else 'status-stopped' }}">{{ status }}</span></p>
-            <div class="button-group">
-                <button onclick="startMihomo()">Start Mihomo</button>
-                <button onclick="stopMihomo()">Stop Mihomo</button>
-                <button onclick="restartMihomo()">Restart Mihomo</button>
-                <button onclick="clearLog()">Clear Log</button>
+            <div class="external-ui-info card">
+                <span>🌐 UI External Mihomo:</span>
+                <a id="external-ui-link" class="external-ui-btn" href="#" target="_blank">Buka UI Mihomo</a>
+            </div>
+            <div class="autostart-section card">
+                <span class="autostart-status" id="autostart-status">-</span>
+                <button class="autostart-btn" id="autostart-btn">...</button>
+            </div>
+            <div class="stats-section card">
+                <div class="stats-title">📊 Statistik Mihomo</div>
+                <ul class="stats-list">
+                    <li><b>Status:</b> <span id="stat-active">-</span></li>
+                    <li><b>Uptime:</b> <span id="stat-uptime">-</span></li>
+                    <li><b>Waktu Aktif Sejak:</b> <span id="stat-activesince">-</span></li>
+                    <li><b>Waktu Start Terakhir:</b> <span id="stat-laststart">-</span></li>
+                </ul>
+            </div>
+            <div class="log-container card">
+                <div class="log-title">📝 Log Mihomo (real-time)</div>
+                <div id="log-box" style="height:260px; overflow-y:auto; background:transparent;"></div>
+            </div>
+            <div class="config-section card">
+                <div class="config-title">⚙️ Config Mihomo (config.yaml)</div>
+                <div class="config-upload">
+                    <input type="file" id="config-upload" accept=".yaml,.yml" />
+                    <button class="config-btn" onclick="uploadConfig()">⬆️ Upload Config</button>
+                </div>
+                <textarea id="config-editor" class="config-editor" spellcheck="false"></textarea><br>
+                <button class="config-btn" onclick="saveConfig()">💾 Simpan Config</button>
+                <button class="config-btn" onclick="fetchConfig()">🔄 Reload Config</button>
             </div>
         </div>
-        <div class="external-ui-info">
-            <span>UI External Mihomo: </span>
-            <a id="external-ui-link" class="external-ui-btn" href="#" target="_blank">Buka UI Mihomo</a>
-        </div>
-        <div class="autostart-section">
-            <span class="autostart-status" id="autostart-status">-</span>
-            <button class="autostart-btn" id="autostart-btn">...</button>
-        </div>
-        <div class="stats-section">
-            <div class="stats-title">Statistik Mihomo</div>
-            <ul class="stats-list">
-                <li><b>Status:</b> <span id="stat-active">-</span></li>
-                <li><b>Uptime:</b> <span id="stat-uptime">-</span></li>
-                <li><b>Waktu Aktif Sejak:</b> <span id="stat-activesince">-</span></li>
-                <li><b>Waktu Start Terakhir:</b> <span id="stat-laststart">-</span></li>
-            </ul>
-        </div>
-        <div class="log-container">
-            <div class="log-title">Log Mihomo (real-time)</div>
-            <div id="log-box" style="height:260px; overflow-y:auto; background:transparent;"></div>
-        </div>
-        <div class="config-section">
-            <div class="config-title">Config Mihomo (config.yaml)</div>
-            <div class="config-upload">
-                <input type="file" id="config-upload" accept=".yaml,.yml" />
-                <button class="config-btn" onclick="uploadConfig()">Upload Config</button>
-            </div>
-            <textarea id="config-editor" class="config-editor" spellcheck="false"></textarea><br>
-            <button class="config-btn" onclick="saveConfig()">Simpan Config</button>
-            <button class="config-btn" onclick="fetchConfig()">Reload Config</button>
-        </div>
+        <div id="notif" class="notif"></div>
     </body>
     </html>
     """
@@ -566,9 +523,9 @@ def index():
 # Rute untuk memulai Mihomo
 @app.route('/start', methods=['POST'])
 def start():
-    subprocess.run(['sudo', 'systemctl', 'start', 'mihomo'])
     subprocess.run(['sudo', 'journalctl', '--rotate'])
     subprocess.run(['sudo', 'journalctl', '--vacuum-time=1s'])
+    subprocess.run(['sudo', 'systemctl', 'start', 'mihomo'])
     # Cek status Mihomo
     status = subprocess.run(['systemctl', 'is-active', '--quiet', 'mihomo'])
     if status.returncode == 0:
@@ -585,9 +542,9 @@ def stop():
 # Rute untuk me-restart Mihomo
 @app.route('/restart', methods=['POST'])
 def restart():
-    subprocess.run(['sudo', 'systemctl', 'restart', 'mihomo'])
     subprocess.run(['sudo', 'journalctl', '--rotate'])
     subprocess.run(['sudo', 'journalctl', '--vacuum-time=1s'])
+    subprocess.run(['sudo', 'systemctl', 'restart', 'mihomo'])
     # Cek status Mihomo
     status = subprocess.run(['systemctl', 'is-active', '--quiet', 'mihomo'])
     if status.returncode == 0:
