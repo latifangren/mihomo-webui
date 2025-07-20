@@ -24,11 +24,10 @@ if systemctl list-units --full -all | grep -q "$SERVICE_NAME.service"; then
             sudo systemctl daemon-reload
             cd ..
             rm -rf "$FOLDER"
-            echo "Service dan folder project dihapus. Melanjutkan clone dan install ulang..."
+            echo "Service dan folder project dihapus. Melanjutkan clone ulang..."
             git clone "$REPO_URL"
-            cd "$FOLDER"
-            chmod +x setup_webui.sh
-            ./setup_webui.sh
+            echo "Silakan masuk ke folder $FOLDER dan jalankan setup_webui.sh lagi:"
+            echo "  cd $FOLDER && chmod +x setup_webui.sh && ./setup_webui.sh"
             exit 0
             ;;
         2)
