@@ -49,10 +49,10 @@ if [ ! -d "venv" ]; then
     python3 -m venv venv
 fi
 
-# 2. Aktifkan venv & install Flask
+# 2. Aktifkan venv & install Flask dan PyYAML
 source venv/bin/activate
 pip install --upgrade pip
-pip install flask
+pip install flask pyyaml
 deactivate
 
 # 3. Buat systemd service
