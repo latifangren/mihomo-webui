@@ -16,7 +16,7 @@ Antarmuka web sederhana dan modern untuk mengelola layanan Mihomo (Clash Mihomo)
 
 ## Prasyarat
 - Python 3.7+
-- Mihomo sudah terinstall dan berjalan sebagai service systemd (`mihomo.service`)
+- Mihomo sudah terinstall dan berjalan sebagai service systemd (`mihomo.service`) #jika belum ada silahkan install dulu
 - User punya akses sudo (untuk kontrol service & log)
 
 ## Cara Install Mihomo (Core) Otomatis
