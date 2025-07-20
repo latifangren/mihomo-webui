@@ -19,7 +19,20 @@ Antarmuka web sederhana dan modern untuk mengelola layanan Mihomo (Clash Mihomo)
 - Mihomo sudah terinstall dan berjalan sebagai service systemd (`mihomo.service`)
 - User punya akses sudo (untuk kontrol service & log)
 
-## Cara Install & Setup Otomatis
+## Cara Install Mihomo (Core) Otomatis
+Script `install_mihomo.sh` akan otomatis menginstall Mihomo **versi terbaru** (auto-latest) dari Github, setup config, log, dan systemd service.
+
+```bash
+curl -O https://raw.githubusercontent.com/latifangren/mihomo-webui/main/install_mihomo.sh
+chmod +x install_mihomo.sh
+./install_mihomo.sh
+```
+
+- Config: `/etc/mihomo/config.yaml`
+- Log: `/var/log/mihomo/mihomo.log`
+- Service: `mihomo` (systemd)
+
+## Cara Install & Setup WebUI
 > **Tips:** Jalankan semua perintah di bawah ini dari direktori tempat Anda ingin menyimpan folder `mihomo-webui`.
 
 1. **Clone repository ini dengan script helper:**
