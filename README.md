@@ -20,6 +20,8 @@ Antarmuka web sederhana dan modern untuk mengelola layanan Mihomo (Clash Mihomo)
 - User punya akses sudo (untuk kontrol service & log)
 
 ## Cara Install & Setup Otomatis
+> **Tips:** Jalankan semua perintah di bawah ini dari direktori tempat Anda ingin menyimpan folder `mihomo-webui`.
+
 1. **Clone repository ini dengan script helper:**
    ```bash
    curl -O https://raw.githubusercontent.com/latifangren/mihomo-webui/main/install.sh
@@ -27,6 +29,7 @@ Antarmuka web sederhana dan modern untuk mengelola layanan Mihomo (Clash Mihomo)
    ./install.sh
    cd mihomo-webui
    ```
+   jika error jangan paste semua, tapi running 1 per 1
    > Script `install.sh` akan otomatis:
    > - Mengecek apakah folder sudah ada
    > - Menawarkan opsi hapus, rename, atau batal jika folder sudah ada
