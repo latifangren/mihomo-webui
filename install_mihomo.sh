@@ -8,6 +8,28 @@ CONFIG_DIR="/etc/mihomo"
 LOG_DIR="/var/log/mihomo"
 SERVICE_FILE="/etc/systemd/system/mihomo.service"
 
+# Cek apakah binary Mihomo sudah ada
+if [ -f "$INSTALL_DIR/mihomo" ]; then
+    echo "Binary Mihomo sudah ada di $INSTALL_DIR/mihomo."
+    read -p "Timpa/overwrite binary Mihomo yang lama? [y/N]: " OVERWRITE_BIN
+    OVERWRITE_BIN="${OVERWRITE_BIN,,}" # lowercase
+    if [[ "$OVERWRITE_BIN" != "y" && "$OVERWRITE_BIN" != "yes" ]]; then
+        echo "Batal install. Tidak ada perubahan."
+        exit 0
+    fi
+fi
+
+# Cek apakah service Mihomo sudah ada
+if [ -f "$SERVICE_FILE" ]; then
+    echo "Service systemd Mihomo sudah ada di $SERVICE_FILE."
+    read -p "Timpa/overwrite service Mihomo yang lama? [y/N]: " OVERWRITE_SVC
+    OVERWRITE_SVC="${OVERWRITE_SVC,,}" # lowercase
+    if [[ "$OVERWRITE_SVC" != "y" && "$OVERWRITE_SVC" != "yes" ]]; then
+        echo "Batal install. Tidak ada perubahan."
+        exit 0
+    fi
+fi
+
 # Ambil versi terbaru dari Github API
 echo "=== Mencari versi Mihomo terbaru... ==="
 LATEST_VERSION=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | grep tag_name | cut -d '"' -f4)
