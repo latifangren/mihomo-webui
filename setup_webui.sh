@@ -5,10 +5,10 @@ SERVICE_FILE="/etc/systemd/system/$SERVICE_NAME.service"
 REPO_URL="https://github.com/latifangren/mihomo-webui.git"
 FOLDER="mihomo-webui"
 
-# Cek apakah service sudah ada
-if systemctl list-units --full -all | grep -q "$SERVICE_NAME.service"; then
+# Cek apakah file service systemd benar-benar ada
+if [ -f "$SERVICE_FILE" ]; then
     echo "Service $SERVICE_NAME sudah terinstall."
-    STATUS=$(systemctl is-active $SERVICE_NAME)
+    STATUS=$(systemctl is-active $SERVICE_NAME 2>/dev/null || echo "not-found")
     echo "Status saat ini: $STATUS"
     echo "Pilih opsi:"
     echo "  1) Timpa (stop, hapus, dan install ulang service & webui)"
