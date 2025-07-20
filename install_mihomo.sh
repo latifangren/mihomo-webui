@@ -36,7 +36,8 @@ API_JSON=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest
 LATEST_VERSION=$(echo "$API_JSON" | grep tag_name | cut -d '"' -f4)
 echo "Versi terbaru: $LATEST_VERSION"
 
-ASSET_URL=$(echo "$API_JSON" | grep browser_download_url | grep "$ARCH" | grep -E '\.gz"' | grep -v compatible | grep -v go | cut -d '"' -f4 | head -n1)
+ASSET_URL=$(echo "$API_JSON" | grep browser_download_url | grep "$ARCH" | grep -E 'linux-amd64-v[0-9.]+\.gz' | grep -v compatible | grep -v go | cut -d '"' -f4 | head -n1)
+echo "ASSET_URL: $ASSET_URL"
 
 if [ -z "$ASSET_URL" ]; then
     echo "Tidak menemukan asset Mihomo untuk arsitektur $ARCH di rilis $LATEST_VERSION!"
