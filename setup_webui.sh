@@ -2,6 +2,8 @@
 
 SERVICE_NAME="mihomo-webui"
 SERVICE_FILE="/etc/systemd/system/$SERVICE_NAME.service"
+REPO_URL="https://github.com/latifangren/mihomo-webui.git"
+FOLDER="mihomo-webui"
 
 # Cek apakah service sudah ada
 if systemctl list-units --full -all | grep -q "$SERVICE_NAME.service"; then
@@ -21,8 +23,12 @@ if systemctl list-units --full -all | grep -q "$SERVICE_NAME.service"; then
             sudo rm -f $SERVICE_FILE
             sudo systemctl daemon-reload
             cd ..
-            rm -rf "$(basename $(pwd))"
-            echo "Service dan folder project dihapus. Silakan clone ulang repo dan jalankan setup lagi."
+            rm -rf "$FOLDER"
+            echo "Service dan folder project dihapus. Melanjutkan clone dan install ulang..."
+            git clone "$REPO_URL"
+            cd "$FOLDER"
+            chmod +x setup_webui.sh
+            ./setup_webui.sh
             exit 0
             ;;
         2)
