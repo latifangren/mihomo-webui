@@ -30,18 +30,24 @@ if [ -f "$SERVICE_FILE" ]; then
     fi
 fi
 
-# Ambil versi terbaru dari Github API
+# Ambil versi terbaru dan asset URL dari Github API
 echo "=== Mencari versi Mihomo terbaru... ==="
-LATEST_VERSION=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | grep tag_name | cut -d '"' -f4)
+API_JSON=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest)
+LATEST_VERSION=$(echo "$API_JSON" | grep tag_name | cut -d '"' -f4)
 echo "Versi terbaru: $LATEST_VERSION"
 
-DOWNLOAD_URL="https://github.com/MetaCubeX/mihomo/releases/download/${LATEST_VERSION}/mihomo-${ARCH}.tar.gz"
+ASSET_URL=$(echo "$API_JSON" | grep browser_download_url | grep "$ARCH" | grep -E '\.gz"' | grep -v compatible | grep -v go | cut -d '"' -f4 | head -n1)
 
-echo "=== Download Mihomo $LATEST_VERSION ($ARCH) ==="
-curl -L "$DOWNLOAD_URL" -o /tmp/mihomo.tar.gz
+if [ -z "$ASSET_URL" ]; then
+    echo "Tidak menemukan asset Mihomo untuk arsitektur $ARCH di rilis $LATEST_VERSION!"
+    exit 1
+fi
+
+echo "=== Download Mihomo dari $ASSET_URL ==="
+curl -L "$ASSET_URL" -o /tmp/mihomo.gz
 
 echo "=== Ekstrak dan install ==="
-tar -xzf /tmp/mihomo.tar.gz -C /tmp
+gunzip -c /tmp/mihomo.gz > /tmp/mihomo
 sudo mv /tmp/mihomo $INSTALL_DIR/mihomo
 sudo chmod +x $INSTALL_DIR/mihomo
 
