@@ -1,5 +1,7 @@
 from flask import Flask, render_template_string, jsonify, request as flask_request
 import subprocess
+import os
+import yaml
 
 app = Flask(__name__)
 
@@ -254,6 +256,50 @@ def index():
             .autostart-btn:hover {
                 background: #1a222c;
             }
+            .external-ui-info {
+                margin: 18px auto 0 auto;
+                max-width: 800px;
+                text-align: center;
+                font-size: 1.08em;
+            }
+            .external-ui-btn {
+                display: inline-block;
+                margin-left: 10px;
+                background: #2d3a4b;
+                color: #fff;
+                border-radius: 6px;
+                padding: 8px 20px;
+                text-decoration: none;
+                font-weight: bold;
+                transition: background 0.2s;
+            }
+            .external-ui-btn:hover {
+                background: #1a222c;
+            }
+            .external-ui-form {
+                margin-top: 8px;
+                display: inline-block;
+            }
+            .external-ui-input {
+                padding: 7px 12px;
+                border-radius: 5px;
+                border: 1px solid #bbb;
+                font-size: 1em;
+                width: 320px;
+                margin-right: 6px;
+            }
+            .external-ui-save {
+                background: #27ae60;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                padding: 7px 16px;
+                font-size: 1em;
+                cursor: pointer;
+            }
+            .external-ui-save:hover {
+                background: #219150;
+            }
         </style>
         <script>
             function updateStatus() {
@@ -439,12 +485,22 @@ def index():
                     })
                     .catch(() => showNotif('Gagal menonaktifkan autostart!', false));
             }
+            function updateExternalUiInfo() {
+                fetch('/api/external_ui_url')
+                    .then(response => response.json())
+                    .then(data => {
+                        const url = data.url;
+                        document.getElementById('external-ui-link').href = url;
+                        document.getElementById('external-ui-link').textContent = url;
+                    });
+            }
             window.onload = function() {
                 updateStatus();
                 updateLog();
                 fetchConfig();
                 updateStats();
                 updateAutostart();
+                updateExternalUiInfo();
                 // Set dark mode dari localStorage
                 if (localStorage.getItem('mihomo-darkmode') === '1') {
                     setDarkMode(true);
@@ -469,6 +525,10 @@ def index():
                 <button onclick="restartMihomo()">Restart Mihomo</button>
                 <button onclick="clearLog()">Clear Log</button>
             </div>
+        </div>
+        <div class="external-ui-info">
+            <span>UI External Mihomo: </span>
+            <a id="external-ui-link" class="external-ui-btn" href="#" target="_blank">Buka UI Mihomo</a>
         </div>
         <div class="autostart-section">
             <span class="autostart-status" id="autostart-status">-</span>
@@ -681,6 +741,36 @@ def edit_config():
         return '', 204
     except Exception as e:
         return f'Gagal menyimpan config: {e}', 500
+
+EXTERNAL_UI_FILE = os.path.join(os.path.dirname(__file__), 'external_ui_url.txt')
+
+def get_external_ui_url():
+    if os.path.exists(EXTERNAL_UI_FILE):
+        with open(EXTERNAL_UI_FILE, 'r') as f:
+            return f.read().strip()
+    return "http://192.168.100.50:9090/ui/"  # default
+
+def set_external_ui_url(url):
+    with open(EXTERNAL_UI_FILE, 'w') as f:
+        f.write(url.strip())
+
+@app.route('/api/external_ui_url', methods=['GET'])
+def api_external_ui_url():
+    # Baca config.yaml Mihomo
+    config_path = '/etc/mihomo/config.yaml'
+    try:
+        with open(config_path, 'r') as f:
+            config = yaml.safe_load(f)
+        ext_ctrl = config.get('external-controller', '0.0.0.0:9090')
+        ext_ui = config.get('external-ui', './ui')
+        # Ambil port dari external-controller
+        port = ext_ctrl.split(':')[-1]
+        # Asumsi path UI: /ui/ (atau dari ext_ui jika ingin lebih dinamis)
+        url = f"http://{flask_request.host.split(':')[0]}:{port}/ui/"
+        return jsonify({'url': url})
+    except Exception as e:
+        # Jika gagal, fallback ke default
+        return jsonify({'url': 'http://127.0.0.1:9090/ui/', 'error': str(e)}), 200
 
 # Jalankan aplikasi web Flask
 if __name__ == '__main__':
