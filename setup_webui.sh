@@ -9,35 +9,28 @@ if systemctl list-units --full -all | grep -q "$SERVICE_NAME.service"; then
     STATUS=$(systemctl is-active $SERVICE_NAME)
     echo "Status saat ini: $STATUS"
     echo "Pilih opsi:"
-    echo "  1) Restart service"
-    echo "  2) Stop service"
-    echo "  3) Uninstall service"
-    echo "  4) Lewati (tidak melakukan apa-apa)"
-    read -p "Masukkan pilihan [1-4]: " PILIH
-    case $PILIH in
+    echo "  1) Timpa (stop, hapus, dan install ulang service & webui)"
+    echo "  2) Batalkan instalasi"
+    read -p "Masukkan pilihan [1-2]: " PILIH
+    PILIH="${PILIH//$'\r'/}"  # Hapus karakter carriage return jika ada
+    case "$PILIH" in
         1)
-            sudo systemctl restart $SERVICE_NAME
-            echo "Service direstart."
-            exit 0
-            ;;
-        2)
-            sudo systemctl stop $SERVICE_NAME
-            echo "Service distop."
-            exit 0
-            ;;
-        3)
+            echo "Menghapus service dan folder project..."
             sudo systemctl stop $SERVICE_NAME
             sudo systemctl disable $SERVICE_NAME
             sudo rm -f $SERVICE_FILE
             sudo systemctl daemon-reload
-            echo "Service dihapus. Lanjut instalasi baru."
+            cd ..
+            rm -rf "$(basename $(pwd))"
+            echo "Service dan folder project dihapus. Silakan clone ulang repo dan jalankan setup lagi."
+            exit 0
             ;;
-        4)
-            echo "Tidak melakukan perubahan."
+        2)
+            echo "Batal instalasi."
             exit 0
             ;;
         *)
-            echo "Pilihan tidak valid."
+            echo "Pilihan tidak valid: '$PILIH'"
             exit 1
             ;;
     esac

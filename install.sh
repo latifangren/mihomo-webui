@@ -31,4 +31,8 @@ if [ -d "$FOLDER" ]; then
     esac
 else
     git clone "$REPO_URL"
-fi 
+fi
+
+cd "$FOLDER"
+chmod +x setup_webui.sh
+./setup_webui.sh 

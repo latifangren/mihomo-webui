@@ -35,31 +35,19 @@ chmod +x install_mihomo.sh
 ## Cara Install & Setup WebUI
 > **Tips:** Jalankan semua perintah di bawah ini dari direktori tempat Anda ingin menyimpan folder `mihomo-webui`.
 
-1. **Clone repository ini dengan script helper:**
+1. **Install WebUI cukup dengan satu perintah:**
    ```bash
    curl -O https://raw.githubusercontent.com/latifangren/mihomo-webui/main/install.sh
    chmod +x install.sh
    ./install.sh
-   cd mihomo-webui
    ```
-   jika error jangan paste semua, tapi running 1 per 1
    > Script `install.sh` akan otomatis:
    > - Mengecek apakah folder sudah ada
    > - Menawarkan opsi hapus, rename, atau batal jika folder sudah ada
    > - Clone repo jika folder belum ada
+   > - Masuk ke folder, menjalankan setup, dan WebUI siap digunakan
 
-2. **Jalankan script setup otomatis:**
-   ```bash
-   chmod +x setup_webui.sh
-   ./setup_webui.sh
-   ```
-   Script ini akan:
-   - Membuat virtual environment
-   - Install Flask
-   - Membuat systemd service `mihomo-webui`
-   - Mengaktifkan autostart webui
-
-3. **Akses WebUI:**
+2. **Akses WebUI:**
    Buka browser ke `http://<ip-server>:5010`
 
 ## Penggunaan
