@@ -52,6 +52,10 @@ gunzip -c /tmp/mihomo.gz > /tmp/mihomo
 sudo mv /tmp/mihomo $INSTALL_DIR/mihomo
 sudo chmod +x $INSTALL_DIR/mihomo
 
+echo "=== Set capabilities untuk TUN support ==="
+sudo setcap cap_net_admin,cap_net_bind_service=+ep $INSTALL_DIR/mihomo
+echo "Capabilities set: $(getcap $INSTALL_DIR/mihomo)"
+
 echo "=== Buat folder config dan log ==="
 sudo mkdir -p $CONFIG_DIR
 sudo mkdir -p $LOG_DIR
@@ -59,7 +63,7 @@ sudo touch $CONFIG_DIR/config.yaml
 sudo chown -R $USER:$USER $CONFIG_DIR
 sudo chown -R $USER:$USER $LOG_DIR
 
-echo "=== Buat systemd service ==="
+echo "=== Buat systemd service (dengan TUN support) ==="
 sudo tee $SERVICE_FILE > /dev/null <<EOF
 [Unit]
 Description=Mihomo (Clash Meta Mihomo)
@@ -69,7 +73,7 @@ After=network.target
 Type=simple
 ExecStart=$INSTALL_DIR/mihomo -d $CONFIG_DIR
 Restart=always
-User=$USER
+# User=$USER  # Commented out untuk TUN support - service akan berjalan sebagai root
 StandardOutput=append:$LOG_DIR/mihomo.log
 StandardError=append:$LOG_DIR/mihomo.log
 
@@ -77,11 +81,56 @@ StandardError=append:$LOG_DIR/mihomo.log
 WantedBy=multi-user.target
 EOF
 
+echo "=== Check TUN module support ==="
+if [ -c /dev/net/tun ]; then
+    echo "✅ TUN device tersedia: /dev/net/tun"
+else
+    echo "❌ TUN device tidak ditemukan!"
+fi
+
+# Check kernel TUN support
+if grep -q "CONFIG_TUN=y" /boot/config-$(uname -r) 2>/dev/null; then
+    echo "✅ Kernel TUN support: enabled"
+else
+    echo "⚠️  Kernel TUN support: unknown (config tidak ditemukan)"
+fi
+
 echo "=== Reload systemd, enable & start Mihomo ==="
 sudo systemctl daemon-reload
 sudo systemctl enable mihomo
 sudo systemctl restart mihomo
 
-echo "=== Mihomo $LATEST_VERSION berhasil diinstall dan berjalan sebagai service! ==="
+# Wait for service to start
+sleep 3
+
+echo "=== Verifikasi instalasi ==="
+echo "Mihomo version: $($INSTALL_DIR/mihomo -v)"
+echo "Service status:"
+sudo systemctl status mihomo --no-pager -l | head -10
+
+# Check TUN interface
+echo ""
+echo "=== Check TUN interface ==="
+if ip link show | grep -q "Meta"; then
+    echo "✅ TUN interface 'Meta' berhasil dibuat:"
+    ip link show | grep Meta
+    ip addr show Meta | grep inet
+else
+    echo "❌ TUN interface tidak ditemukan. Periksa config.yaml untuk setting TUN."
+fi
+
+echo ""
+echo "=== Mihomo $LATEST_VERSION berhasil diinstall dengan TUN support! ==="
 echo "Edit config di: $CONFIG_DIR/config.yaml"
-echo "Log di: $LOG_DIR/mihomo.log" 
+echo "Log di: $LOG_DIR/mihomo.log"
+echo ""
+echo "📋 Catatan TUN Support:"
+echo "- Service berjalan sebagai root untuk akses TUN interface"
+echo "- Binary memiliki capabilities: cap_net_admin,cap_net_bind_service"
+echo "- TUN interface akan dibuat otomatis jika enabled di config"
+echo ""
+echo "🔧 Untuk enable TUN di config.yaml, pastikan ada:"
+echo "tun:"
+echo "  enable: true"
+echo "  stack: system"
+echo "  auto-route: true"
